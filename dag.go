@@ -7,8 +7,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/TRON-US/go-btfs-api/options"
-	"github.com/ipfs/go-ipfs-files"
+	"github.com/ipfs/go-ipfs-api/options"
+	files "github.com/ipfs/go-ipfs-files"
 )
 
 func (s *Shell) DagGet(ref string, out interface{}) error {
@@ -37,7 +37,7 @@ func (s *Shell) DagPutWithOpts(data interface{}, opts ...options.DagPutOption) (
 		return "", fmt.Errorf("cannot current handle putting values of type %T", data)
 	}
 
-	fr := files.NewReaderFile(r)
+	fr :=   s.NewReaderFile(r)
 	slf := files.NewSliceDirectory([]files.DirEntry{files.FileEntry("", fr)})
 	fileReader := files.NewMultiFileReader(slf, true)
 
@@ -52,6 +52,7 @@ func (s *Shell) DagPutWithOpts(data interface{}, opts ...options.DagPutOption) (
 		Option("input-enc", cfg.InputEnc).
 		Option("format", cfg.Kind).
 		Option("pin", cfg.Pin).
+		Option("hash", cfg.Hash).
 		Body(fileReader).
 		Exec(context.Background(), &out)
 }
