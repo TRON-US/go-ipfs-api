@@ -6,6 +6,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strings"
 	"testing"
@@ -20,8 +21,9 @@ import (
 
 const (
 	examplesHash = "QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv"
-	shellUrl     = "localhost:5001"
 )
+
+var shellUrl = getEnv("BTFS_URL", "localhost:5001")
 
 func TestAdd(t *testing.T) {
 	is := is.New(t)
@@ -552,4 +554,11 @@ LOOP:
 		sleepMoment()
 	}
 	fmt.Printf("Complete\n")
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
